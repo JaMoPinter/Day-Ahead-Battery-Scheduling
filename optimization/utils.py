@@ -8,9 +8,27 @@ def cdf_formula(name):
     - sum-2-logistic-distributions: sum of two logistic distributions (see paper) 
     - sum-2-gaussian-distributions: sum of two gaussian distributions '''
 
+
     def cdf_normal(x, mu, sig, n):
-        ''' CDF approximation via Double Factorial (!!) (For formula see https://en.wikipedia.org/wiki/Normal_distribution) Sorry in advance, for everyone who wants to understand this >.< (error function cannot be used in Pyomo) '''
-        return 0.5 + 1/(2*pi)**0.5 * pyo.exp(-0.5 * ((x-mu)/sig)**2) * sum([((x-mu)/sig)**(i) / (pyo.prod(range(1, i+1, 2))) for i in range(1, int(2*n), 2)])
+        ''' Gaussian CDF computation via Abramowitz-Stegun approximation without if-statements (Pyomo cannot use If-Statements). '''
+
+        z = (x - mu) / sig  # standardize the normal distribution
+
+        epsilon = 1e-6  # to avoid division by zero => Needed for sign function approximation
+        sign_z = z / (pyo.sqrt(z**2 + epsilon))  # sign function approximation
+
+        z_abs = z * sign_z  # absolute value of z
+
+        d1 = 0.0498673470  # Coefficients for the Abramowitz-Stegun approximation
+        d2 = 0.0211410061
+        d3 = 0.0032776263
+        d4 = 0.0000380036
+        d5 = 0.0000488906
+        d6 = 0.0000053830 
+
+        t = 1 + d1 * z_abs + d2 * z_abs**2 + d3 * z_abs**3 + d4 * z_abs**4 + d5 * z_abs**5 + d6 * z_abs**6 
+
+        return 0.5 + 0.5 * sign_z * (1 - t**(-16))
     
     if name == 'normal':
         return cdf_normal
@@ -24,7 +42,7 @@ def cdf_formula(name):
 def pdf_formula(name):
     ''' Returns the PDF formula for the specified distribution. '''
     if name == 'normal':
-        return lambda x, mu, sig, n: 1 / (sig * pyo.sqrt(2 * pi)) * pyo.exp(-0.5 * ((x - mu) / sig)**2)  # n is artifact from the CDF formula
+        return lambda x, mu, sig, n: 1 / (sig * pyo.sqrt(2 * pi)) * pyo.exp(-0.5 * ((x - mu) / sig)**2) 
     elif name == 'sum-2-logistic-distributions':
         return lambda x, w1, w2, w3, w4, w5, w6: w1 * w2 * pyo.exp(-w2 * (x - w3)) / (1 + pyo.exp(-w2 * (x - w3)))**2 + w4 * w5 * pyo.exp(-w5 * (x - w6)) / (1 + pyo.exp(-w5 * (x - w6)))**2
     elif name =='sum-2-gaussian-distributions':
@@ -39,9 +57,27 @@ def cdf_formula_numpy(name):
     This is needed becasue during optimization, pyomo cannot utilize other libraries (like numpy). However, for the 
     plotting, pyomo cannot be used. Therefore, this function allows a computation of the CDF using numpy. '''
 
+
     def cdf_normal(x, mu, sig, n):
-        ''' CDF approximation via Double Factorial (!!) (For formula see https://en.wikipedia.org/wiki/Normal_distribution) Sorry in advance, for everyone who wants to understand this >.< (error function cannot be used in Pyomo) '''
-        return 0.5 + 1/(2*pi)**0.5 * np.exp(-0.5 * ((x-mu)/sig)**2) * sum([((x-mu)/sig)**(i) / (np.prod(range(1, i+1, 2))) for i in range(1, int(2*n), 2)])
+        ''' Abramowitz-Stegun approximation of the normal CDF '''
+        z = (x - mu) / sig
+
+        def phi(z):
+            if z < 0: 
+                return 1 - phi(-z)
+
+            d1 = 0.0498673470
+            d2 = 0.0211410061
+            d3 = 0.0032776263
+            d4 = 0.0000380036
+            d5 = 0.0000488906
+            d6 = 0.0000053830 
+
+            t = 1 + d1 * z + d2 * z**2 + d3 * z**3 + d4 * z**4 + d5 * z**5 + d6 * z**6
+
+            return 1 - 0.5 * (t ** -16)
+            
+        return phi(z)  
 
     if name == 'normal':
         return cdf_normal
