@@ -5,11 +5,12 @@ import numpy as np
 def cdf_formula(name):
     ''' Returns the CDF formula for the specified distribution. Currently, the following distributions are supported:
     - normal: normal distribution
-    - sum-2-logistic-distributions: sum of two logistic distributions (see paper) 
-    - sum-2-gaussian-distributions: sum of two gaussian distributions '''
+    - gmm2: sum of two gaussian distributions (guassian mixture model)
+    - sum-2-logistic-distributions: sum of two logistic distributions 
+'''
 
 
-    def cdf_normal(x, mu, sig, n):
+    def cdf_normal(x, mu, sig):
         ''' Gaussian CDF computation via Abramowitz-Stegun approximation without if-statements (Pyomo cannot use If-Statements). '''
 
         z = (x - mu) / sig  # standardize the normal distribution
@@ -27,26 +28,32 @@ def cdf_formula(name):
         d6 = 0.0000053830 
 
         t = 1 + d1 * z_abs + d2 * z_abs**2 + d3 * z_abs**3 + d4 * z_abs**4 + d5 * z_abs**5 + d6 * z_abs**6 
-
         return 0.5 + 0.5 * sign_z * (1 - t**(-16))
     
     if name == 'normal':
         return cdf_normal
+    
+    elif name == 'gmm2':
+        return lambda x, w1, mu1, sig1, w2, mu2, sig2: w1 * cdf_normal(x, mu1, sig1) + w2 * cdf_normal(x, mu2, sig2)
+    
     elif name == 'sum-2-logistic-distributions':
         return lambda x, w1, w2, w3, w4, w5, w6: w1 / (1 + pyo.exp(-w2 *(x - w3))) + w4 / (1 + pyo.exp(-w5 *(x - w6)))
-    elif name == 'sum-2-gaussian-distributions':
-        return lambda x, w1, w2, mu1, mu2, sig1, sig2, n: w1 * cdf_normal(x, mu1, sig1, n) + w2 * cdf_normal(x, mu2, sig2, n)
+    
     else:
         raise ValueError(f'CDF formula {name} not recognized')
+
 
 def pdf_formula(name):
     ''' Returns the PDF formula for the specified distribution. '''
     if name == 'normal':
-        return lambda x, mu, sig, n: 1 / (sig * pyo.sqrt(2 * pi)) * pyo.exp(-0.5 * ((x - mu) / sig)**2) 
+        return lambda x, mu, sig: 1 / (sig * pyo.sqrt(2 * pi)) * pyo.exp(-0.5 * ((x - mu) / sig)**2) 
+    
+    elif name =='gmm2':
+        return lambda x, w1, mu1, sig1, w2, mu2, sig2: w1 / (sig1 * pyo.sqrt(2 * pi)) * pyo.exp(-0.5 * ((x - mu1) / sig1)**2) + w2 / (sig2 * pyo.sqrt(2 * pi)) * pyo.exp(-0.5 * ((x - mu2) / sig2)**2) 
+    
     elif name == 'sum-2-logistic-distributions':
         return lambda x, w1, w2, w3, w4, w5, w6: w1 * w2 * pyo.exp(-w2 * (x - w3)) / (1 + pyo.exp(-w2 * (x - w3)))**2 + w4 * w5 * pyo.exp(-w5 * (x - w6)) / (1 + pyo.exp(-w5 * (x - w6)))**2
-    elif name =='sum-2-gaussian-distributions':
-        return lambda x, w1, w2, mu1, mu2, sig1, sig2, n: w1 / (sig1 * pyo.sqrt(2 * pi)) * pyo.exp(-0.5 * ((x - mu1) / sig1)**2) + w2 / (sig2 * pyo.sqrt(2 * pi)) * pyo.exp(-0.5 * ((x - mu2) / sig2)**2) 
+
     else:
         raise ValueError(f'PDF formula {name} not recognized')
 
@@ -57,8 +64,7 @@ def cdf_formula_numpy(name):
     This is needed becasue during optimization, pyomo cannot utilize other libraries (like numpy). However, for the 
     plotting, pyomo cannot be used. Therefore, this function allows a computation of the CDF using numpy. '''
 
-
-    def cdf_normal(x, mu, sig, n):
+    def cdf_normal(x, mu, sig):
         ''' Abramowitz-Stegun approximation of the normal CDF '''
         z = (x - mu) / sig
 
@@ -74,17 +80,19 @@ def cdf_formula_numpy(name):
             d6 = 0.0000053830 
 
             t = 1 + d1 * z + d2 * z**2 + d3 * z**3 + d4 * z**4 + d5 * z**5 + d6 * z**6
-
             return 1 - 0.5 * (t ** -16)
             
         return phi(z)  
 
     if name == 'normal':
         return cdf_normal
-    elif name == 'sum-2-gaussian-distributions':
-        return lambda x, w1, w2, mu1, mu2, sig1, sig2, n: w1 * cdf_normal(x, mu1, sig1, n) + w2 * cdf_normal(x, mu2, sig2, n)
+    
+    elif name == 'gmm2':
+        return lambda x, w1, mu1, sig1, w2, mu2, sig2: w1 * cdf_normal(x, mu1, sig1) + w2 * cdf_normal(x, mu2, sig2)
+    
     elif name == 'sum-2-logistic-distributions':
         return lambda x, w1, w2, w3, w4, w5, w6: w1 / (1 + np.exp(-w2 *(x - w3))) + w4 / (1 + np.exp(-w5 *(x - w6)))
+    
     else:
         raise ValueError(f'CDF formula {name} not recognized')
 

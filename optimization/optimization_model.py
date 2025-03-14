@@ -37,6 +37,7 @@ class BaseOptimizationModel:
         self.c31 = data['c31']
         self.c32 = data['c32']
         self.c_energy_final = data['c_energy_final']
+        self.enforce_deterministic_battery = data['enforce_deterministic_battery']
 
         self.probability_distribution_name = data['pdf/cdf name']
 
@@ -277,13 +278,14 @@ class BaseOptimizationModel:
         ##########################################################################################################
 
         ############################################# Reproduce Case 1 ###########################################
-        # def constr_x_low(model, t):
-        #     return model.x_low[t] == 0
-        # self.model.constr_x_low = pyo.Constraint(self.model.time, rule=constr_x_low)
+        if self.enforce_deterministic_battery:
+            def constr_x_low(model, t):
+                return model.x_low[t] == 0
+            self.model.constr_x_low = pyo.Constraint(self.model.time, rule=constr_x_low)
 
-        # def constr_x_high(model, t):
-        #     return model.x_high[t] == 0
-        # self.model.constr_x_high = pyo.Constraint(self.model.time, rule=constr_x_high)
+            def constr_x_high(model, t):
+                return model.x_high[t] == 0
+            self.model.constr_x_high = pyo.Constraint(self.model.time, rule=constr_x_high)
         ##########################################################################################################
 
 

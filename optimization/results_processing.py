@@ -184,7 +184,7 @@ def plot_probabilistic_power_schedule(model, quantiles=[0.05, 0.95]):
     cbar = plt.colorbar(sm, ax=ax)
     cbar.set_label('Probability of Deviations', rotation=270, labelpad=15)
 
-    plt.ylim([-8.5, 4.5])
+    plt.ylim([-6.5, 2.5])
     plt.xlim([-0.8, len(probs_low) + 0.3])
     ax.grid(True, which='both', linestyle='--', linewidth=0.5)
 

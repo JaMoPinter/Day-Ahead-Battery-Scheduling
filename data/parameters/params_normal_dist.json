@@ -14,5 +14,6 @@
     "c22": 0.0,
     "c31": 4.0,
     "c32": 2.0,
-    "c_energy_final": 0.0
+    "c_energy_final": 0.0, 
+    "enforce_deterministic_battery": false
 }

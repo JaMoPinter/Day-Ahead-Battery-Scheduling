@@ -9,25 +9,26 @@ from experiment_tracking import start_experiment, log_data, end_experiment, log_
 
 def main():
     # Example 1: Normal Distribution
-    # fc_folder = 'data/parametric_forecasts/normal_dist_forecast_2024-10-31/'
+    # fc_folder = 'data/parametric_forecasts/normal_dist_forecast_2025-03-14/'
     # params_path = 'data/parameters/params_normal_dist.json'
     # timeframe = ['2017-05-18 06:00:00', '2017-05-19 05:00:00']
 
-    # Example 2: Sum of two logistic functions (Recreate paper results)
-    fc_folder = 'data/parametric_forecasts/s2l_dist_forecast_2024-10-02/' 
-    params_path = 'data/parameters/params_case2.json'
-    timeframe = ['2017-05-18 06:00:00', '2017-05-19 05:00:00']  # Forecasted nighttime PDFs can be too tight for plotting or solving the optimization model (See limitations section in the paper).
-                                                                # Simple solution: Either choose a different date, adjust the timeframe to exclude nighttime (e.g. 06:00-23:00), or use gaussian distribution.
-                                                                # Better solution: Redo the forecasts with additional constraints, or approximate nighttime PDFs with a different distribution (GMM looks promising).
+    # Example 2: Gaussian Mixture Model - 2 components (Recreate paper results)
+    fc_folder = 'data/parametric_forecasts/gmm2_forecast_2025-03-14_WindowSize5_patch_tst_prosumption_10_03_2025/' 
+    params_path = 'data/parameters/params_gmm2_case1.json'
+    timeframe = ['2017-05-18 06:00:00', '2017-05-19 05:00:00']  
+
 
     # Load data
     forecasts = load_forecasts(fc_folder, timeframe=timeframe)
     params = load_params(params_path)
     input_data = preprocess_data(forecasts, params)
 
+
     # Track the experiment in MLflow
     # start_experiment(params['experiment_name'])
     # log_data(input_data)
+
 
     # Run the optimization model
     model = BaseOptimizationModel(input_data)
@@ -42,6 +43,7 @@ def main():
     # Track results in MLflow
     # log_results(model.model)
     # end_experiment()
+
 
     print('Fin')
 
