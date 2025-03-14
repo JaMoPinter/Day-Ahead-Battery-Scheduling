@@ -1,0 +1,25 @@
+{
+    "experiment_name": "Uncertainty Distribution Optimization",
+    "pdf/cdf name": "gmm2",
+    "t_inc": 1.0,
+    "e0": 5.0,
+    "e_min": 0.0,
+    "e_max": 13.5,
+    "pb_min": -5.0,
+    "pb_max": 5.0,
+    "mu": 0.05,
+    "c11": 2.0,
+    "c12": 0.0,
+    "c21": 1.0,
+    "c22": 0.0,
+    "c31": {
+        "c_default": 0.5,
+        "c_extra": {
+            "6": 50.0,
+            "7": 50.0
+        }
+    },
+    "c32": 0.5,
+    "c_energy_final": 0.0, 
+    "enforce_deterministic_battery": false
+}
