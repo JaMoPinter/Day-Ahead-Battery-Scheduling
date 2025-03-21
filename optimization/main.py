@@ -14,8 +14,8 @@ def main():
     # timeframe = ['2017-05-18 06:00:00', '2017-05-19 05:00:00']
 
     # Example 2: Gaussian Mixture Model - 2 components (Recreate paper results)
-    fc_folder = 'data/parametric_forecasts/gmm2_forecast_2025-03-14_WindowSize5_patch_tst_prosumption_10_03_2025/' 
-    params_path = 'data/parameters/params_gmm2_case1.json'
+    fc_folder = 'data/parametric_forecasts/gmm2_forecast_2025-03-20_WindowSize5_patch_tst_prosumption_10_03_2025/' 
+    params_path = 'data/parameters/params_gmm2_case2.json'
     timeframe = ['2017-05-18 06:00:00', '2017-05-19 05:00:00']  
 
 

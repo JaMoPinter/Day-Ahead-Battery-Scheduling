@@ -236,7 +236,7 @@ def validate_expected_values(model):
 
     pg_expected = [pg_low[i] + pg_high[i] for i in range(len(pg_low))]
   
-    print("Sum of expected values for validation purposes:")
+    print("Sum of expected values for validation purposes (see Equation (8)):")
     for i in range(len(pb_tilde)):
         print(f'Sum of expected values at time {list(model.model.time)[i]}: {pb_tilde[i] + pg_expected[i]}')
 
