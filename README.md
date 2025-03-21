@@ -6,21 +6,24 @@
 
 This repository contains the Python implementation for the paper:
 > [Probabilistic Day-Ahead Battery Scheduling based on Mixed Random Variables for Enhanced Grid Operation](https://arxiv.org/abs/2411.12480) <br>
-> Authors: Janik Pinter, Frederik Zahn, Maximilian Beichter, Ralf Mikut, and Veit Hagenmeyer
+> Authors: Janik Pinter, Frederik Zahn, Maximilian Beichter, Ralf Mikut, and Veit Hagenmeyer <br>
+> NOTE: The paper is currently under revision! An updated link to the final version will follow when available!
 
 ## Repository Structure
 ```
 .
-├── forecasting/ 
-│   ├── create_quantile_forecasts.ipynb  # Create quantile prosumption forecasts based on real-world data
-│   ├── convert_forecasts.ipynb          # Convert quantile forecasts to parametric form
-│   └── visualize_data.ipynb             # Visualize forecasted PDFs
-│
 ├── data/
 │   ├── ground_truth/                    # Contains the ground-truth of prosumption of selected real-world example
 │   ├── quantile_forecasts/              # Contains the quantile forecasts
-│   ├── parametric_forecasts/            # Contains parametric forecasts for two distributions (Gaussian and sum of 2 logistic functions)
+│   ├── parametric_forecasts/            # Contains parametric forecasts for two distributions (Normal Dist. and Sum of 2 Normal Dist.)
 │   └── parameters/                      # Contains json files with params such as cost-function weights, battery specifications, ...
+│
+|
+├── forecasting/ 
+│   ├── create_quantile_forecasts_neuralforecaster_hyper.ipynb  # Create quantile prosumption forecasts based on real-world data
+│   ├── convert_forecasts.ipynb          # Convert quantile forecasts to parametric form
+│   └── visualize_data.ipynb             # Visualize forecasted PDFs
+|
 │
 └── optimization/ 
     ├── input_data.py                    # Load forecasts and parameters
@@ -59,10 +62,7 @@ In order to start an optimization process, execute main.py.
    ```
 
 ## Reproducibility
-In order to reproduce the results shown in the paper, execute the optimization process with the corresponding parameter file for Case 1, Case 2, or Case 3. The necessary forecasts are included in the repository.<br>
-Note that for Case 1, uncertainties neither in the grid nor in the battery system are penalized. 
-Thus, <ins>x</ins> and  ̅x are dispensable decision variables and are therefore set to zero (enable respective constraints in 'optimization_model.py' after '### Reproduce Case 1 ###' to obtain the same results as shown in the paper for Case 1).
-
+In order to reproduce the results shown in the paper, execute the optimization process with the corresponding parameter file for Case 1, Case 2, or Case 3 specified in main.py. The necessary forecasts are included in the repository.
 
 In order to reproduce the forecasts, the following steps need to be done:
 1. Install corresponding forecasting requirements
@@ -83,3 +83,6 @@ This project is funded by the Helmholtz Association under the "Energy System Des
 
 ## License
 This code is licensed under the [MIT License](LICENSE).
+
+## First Version
+The content of this paper was first published on [Arxiv](https://arxiv.org/abs/2411.12480). If you found this repository over the Arxiv version, we kindly refer you to the revised version available soon.
