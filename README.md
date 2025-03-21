@@ -62,14 +62,18 @@ In order to start an optimization process, execute main.py.
    ```
 
 ## Reproducibility
+### Reproduce Optimization Results
 In order to reproduce the results shown in the paper, execute the optimization process with the corresponding parameter file for Case 1, Case 2, or Case 3 specified in main.py. The necessary forecasts are included in the repository.
 
+<br>
+
+### Reproduce Forecasts
 In order to reproduce the forecasts, the following steps need to be done:
 1. Install corresponding forecasting requirements
    ```
    python -m pip install -r requirements-forecasting.txt
    ```
-2. Execute create_quantile_forecasts.ipynb with the following specifications:
+2. Execute create_quantile_forecasts.ipynb with the following specifications (GPU necessary):
     - The forecast were generated seeded using a system with the following specs, os, python version:
       - **Processor**: Intel 13th Gen Core i9-13900
       - **Memory**: 64 GB RAM
