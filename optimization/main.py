@@ -9,7 +9,7 @@ from experiment_tracking import start_experiment, log_data, end_experiment, log_
 
 def main():
     # Example 1: Normal Distribution
-    # fc_folder = 'data/parametric_forecasts/normal_dist_forecast_2025-03-14/'
+    # fc_folder = 'data/parametric_forecasts/normal_dist_forecast_2025-03-21/'
     # params_path = 'data/parameters/params_normal_dist.json'
     # timeframe = ['2017-05-18 06:00:00', '2017-05-19 05:00:00']
 
